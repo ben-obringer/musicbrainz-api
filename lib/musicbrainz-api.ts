@@ -153,7 +153,9 @@ export interface IMusicBrainzConfig {
   /**
    * User e-mail address or application URL
    */
-  appContactInfo?: string
+  appContactInfo?: string,
+
+  disableRateLimiting?: boolean,
 }
 
 export interface ICsrfSession {
@@ -253,7 +255,10 @@ export class MusicBrainzApi {
 
     query.fmt = 'json';
 
-    await this.rateLimiter.limit();
+    if (!this.config.disableRateLimiting) {
+      await this.rateLimiter.limit();
+    }
+
     const response: any = await got.get('ws/2' + relUrl, {
       ...this.options,
       searchParams: query,
@@ -537,7 +542,9 @@ export class MusicBrainzApi {
     const postData = xmlMetadata.toXml();
 
     do {
-      await this.rateLimiter.limit();
+      if (!this.config.disableRateLimiting) {
+        await this.rateLimiter.limit();
+      }
       const response: any = await got.post(path, {
         ...this.options,
         searchParams: {client: clientId},
@@ -627,7 +634,9 @@ export class MusicBrainzApi {
    */
   public async editEntity(entity: mb.EntityType, mbid: string, formData: Record<string, any>): Promise<void> {
 
-    await this.rateLimiter.limit();
+    if (!this.config.disableRateLimiting) {
+      await this.rateLimiter.limit();
+    }
 
     this.session = await this.getSession();
 
