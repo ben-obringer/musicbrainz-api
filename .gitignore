@@ -4,9 +4,6 @@ node_modules/
 test/**/*.js
 test/**/*.map
 test/**/*.d.ts
-lib/**/*.js
-lib/**/*.map
-lib/**/*.d.ts
 coverage/
 .nyc_output
 etc
